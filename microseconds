@@ -1,0 +1,51 @@
+#include <Arduino.h>
+
+const int ledPin = 13;  // Built-in LED pin on Arduino Uno
+
+const int sensorPin = A0;
+
+const int below30Interval = 250000;  // Interval for temperature below 30 degrees Celsius
+const int above30Interval = 500000;  // Interval for temperature above 30 degrees Celsius
+
+// Variables for state machine
+int ledState = LOW;
+int currentState = 0;  // 0 for below 30 degrees, 1 for above 30 degrees
+
+void setup() {
+  // Set LED pin as output
+  pinMode(ledPin, OUTPUT);
+
+  // Set up serial communication for debugging (optional)
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Read temperature from LM35 sensor
+  int temperature = analogRead(sensorPin);
+
+  float celsius = (temperature * 0.48876);  // LM35 sensitivity: 10 mV per degree Celsius
+
+  Serial.print("Temperature: ");
+  Serial.print(celsius);
+  Serial.println(" °C");
+
+  if (celsius < 30.0 && currentState != 0) {
+    currentState = 0;
+    toggleLED(below30Interval);
+  } else if (celsius >= 30.0 && currentState != 1) {
+    currentState = 1;
+    toggleLED(above30Interval);
+  }
+}
+
+// Function to toggle the LED without using millis(), delay(), and micros()
+void toggleLED(int interval) {
+  int numBlinks = 1000000 / interval;  // Number of blinks to achieve the desired interval
+
+  for (int i = 0; i < numBlinks; ++i) {
+    digitalWrite(ledPin, HIGH);
+    delayMicroseconds(interval / 2);
+    digitalWrite(ledPin, LOW);
+    delayMicroseconds(interval / 2);
+  }
+}
