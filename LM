@@ -1,13 +1,10 @@
-// Include necessary libraries
 #include <Arduino.h>
 
-// Define pin for onboard LED
 const int ledPin = 13;  // Built-in LED pin on Arduino Uno
 
 // Define pin for LM35 temperature sensor
 const int sensorPin = A0;
 
-// Constants for intervals
 const int below30Interval = 250;  // Interval for temperature below 30 degrees Celsius
 const int above30Interval = 500;  // Interval for temperature above 30 degrees Celsius
 
@@ -31,7 +28,6 @@ void loop() {
   // Convert analog reading to temperature in Celsius
   float celsius = (temperature * 0.48876);  // LM35 sensitivity: 10 mV per degree Celsius
 
-  // Output temperature to serial monitor (optional)
   Serial.print("Temperature: ");
   Serial.print(celsius);
   Serial.println(" °C");
